@@ -26,7 +26,6 @@ public class BattleshipGUI extends JFrame{
     private int replayType = 0;
 
 	private int boatSpawn;
-	private boolean ipEntered = false;
 	private boolean replay = true;
 	private boolean prompt = true;
 
@@ -44,10 +43,7 @@ public class BattleshipGUI extends JFrame{
 	private JLabel messages = new JLabel("Messages go here:", JLabel.CENTER);
 	
 	//Gametype frame popup
-	private JFrame typePopUp = new JFrame();
-	private JButton hostButton = new JButton("Host a Game");
-	private JButton joinButton = new JButton("Join a Game");
-	private JButton computerButton = new JButton("Play Against a Computer");
+	private TypeSetUpFrame typePopUp = new TypeSetUpFrame();
 	
 	//Difficulty frame popup
     private JFrame diffPopUp = new JFrame();
@@ -73,10 +69,8 @@ public class BattleshipGUI extends JFrame{
     private JComboBox colorDrop = new JComboBox(colorList);
 	
 	//Join IP frame popup
-	private JFrame ipPopUp = new JFrame();
-	private JLabel ipRequest = new JLabel("Please input the IP address you wish to join.", JLabel.CENTER);
-	private JTextField ipField = new JTextField();
-	private JLabel ipMessage = new JLabel("Hit enter to submit.", JLabel.CENTER);
+	private IpPopUpFrame ipPopUp = new IpPopUpFrame();
+
 	
     //Play again popup
     private JFrame playAgainPopUp = new JFrame();
@@ -91,8 +85,7 @@ public class BattleshipGUI extends JFrame{
 
     //Game board component
     private GameGrid board = new GameGrid();
-
-
+    GridLayout threeButtonGrid = new GridLayout(1,3);
 
     /**
      * Default constructor for the class. Sets everything up.
@@ -128,7 +121,6 @@ public class BattleshipGUI extends JFrame{
         this.board.requestFocusInWindow();
 
         //setup difficulty options popup
-        GridLayout threeButtonGrid = new GridLayout(1,3);
         this.diffPopUp.setLayout(threeButtonGrid);
         this.diffPopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.diffPopUp.setSize(600,100);
@@ -141,21 +133,6 @@ public class BattleshipGUI extends JFrame{
         this.diffPopUp.add(easyButton);
         this.diffPopUp.add(mediumButton);
         this.diffPopUp.add(hardButton);
-
-        //Setup gametype popup
-        this.typePopUp.setLayout(threeButtonGrid);
-        this.typePopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.typePopUp.setSize(800,100);
-
-        //Add type buttons listeners
-        this.hostButton.addActionListener(this.new typeClick());
-        this.joinButton.addActionListener(this.new typeClick());
-        this.computerButton.addActionListener(this.new typeClick());
-
-        //Add type buttons to window
-        this.typePopUp.add(hostButton);
-        this.typePopUp.add(joinButton);
-        this.typePopUp.add(computerButton);
 
         //Setup playAgain popup
         this.playAgainPopUp.setLayout(threeButtonGrid);
@@ -214,19 +191,6 @@ public class BattleshipGUI extends JFrame{
         //Add buttons and dropdown to window
         this.colorPopUp.getContentPane().add(BorderLayout.CENTER, colorDrop);
         this.colorPopUp.getContentPane().add(BorderLayout.SOUTH, colorSelectButton);
-
-        //Setup IP popup
-        GridLayout threeWidgetVerticleGrid = new GridLayout(3,1);
-        this.ipPopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.ipPopUp.setLayout(threeWidgetVerticleGrid);
-        this.ipPopUp.setSize(600,100);
-        this.ipField.setHorizontalAlignment(JTextField.CENTER);
-        this.ipField.addActionListener(this.new ipEnter());
-
-        //Add IP widgets
-        this.ipPopUp.getContentPane().add(BorderLayout.NORTH,ipRequest);
-        this.ipPopUp.getContentPane().add(BorderLayout.CENTER,ipField);
-        this.ipPopUp.getContentPane().add(BorderLayout.SOUTH,ipMessage);
         
         //Initialize sound file locations
         board.placeURL = this.getClass().getResource("sfx/ship_place.aiff");
@@ -245,6 +209,39 @@ public class BattleshipGUI extends JFrame{
             this.replay = false;
             this.setVisible(false);
             this.typePopUp.setVisible(true);
+            while (!typePopUp.entered){
+                try{
+                    Thread.sleep(100);}
+                catch(InterruptedException e){
+                    System.out.println(e);
+                }
+            }
+            this.gameType = typePopUp.getGameType();
+
+            this.typePopUp.setVisible(false);
+            if(gameType == 1){                 //Host Game
+                this.setVisible(true);
+            }
+            else if (gameType == 2){            //Join Game
+                setUpJoinGame();
+            }
+            else if (gameType == 3){            //Play computer
+                this.colorPopUp.setVisible(true);
+            }
+        }
+
+        public void setUpJoinGame(){
+            this.ipPopUp.setVisible(true);
+            while(this.ipPopUp.getIpEntered() == false){
+                try{
+                    Thread.sleep(100);}
+                catch(InterruptedException e){
+                    System.out.println(e);
+                }
+            }
+            this.gameType = 2;
+            this.ipPopUp.setVisible(false);
+            this.setVisible(true);
         }
 
         /**
@@ -254,7 +251,6 @@ public class BattleshipGUI extends JFrame{
         public void reset(){
             this.difficulty = null;
             this.gameType = 0;
-            this.ipEntered = false;
             this.replay = true;
             this.prompt = true;
 
@@ -267,7 +263,7 @@ public class BattleshipGUI extends JFrame{
             this.difficulty = null;
             this.prompt = true;
             this.gameType = 3;
-            this.ipEntered = false;
+            this.ipPopUp.setIpEntered(false);
             this.replay = true;
              
             board.reset();
@@ -278,10 +274,9 @@ public class BattleshipGUI extends JFrame{
         }
 
         public void resetForIP() {
-            this.difficulty = "INTERNET";
             this.prompt = true;
             this.gameType = 2;
-            this.ipEntered = false;
+            this.ipPopUp.setIpEntered(false);
             this.replay = true;
              
             board.reset();
@@ -293,10 +288,9 @@ public class BattleshipGUI extends JFrame{
 
         public void resetForJoinAgain() {
             this.setVisible(false);
-            this.difficulty = "INTERNET";
             this.prompt = true;
             this.gameType = 2;
-            this.ipEntered = false;
+            this.ipPopUp.setIpEntered(false);
             this.replay = true;
              
             board.reset();
@@ -307,10 +301,9 @@ public class BattleshipGUI extends JFrame{
         
         public void resetForHost() {
             this.setVisible(false);
-            this.difficulty = "INTERNET";
             this.prompt = true;
             this.gameType = 1;
-            this.ipEntered = false;
+            this.ipPopUp.setIpEntered(false);
             this.replay = true;
              
             board.reset();
@@ -323,7 +316,7 @@ public class BattleshipGUI extends JFrame{
             this.difficulty = null;
             this.prompt = true;
             this.gameType = 3; 
-            this.ipEntered = false;
+            this.ipPopUp.setIpEntered(false);
             this.replay = true;
 
 
@@ -338,10 +331,8 @@ public class BattleshipGUI extends JFrame{
         }
 
         public void networkPlayAgain() {
-	    this.networkPlayAgainPopUp.setVisible(true);
-	}
-
-
+	       this.networkPlayAgainPopUp.setVisible(true);
+	   }
 
         /**
          * Changes the title at the top of the gui.
@@ -403,7 +394,7 @@ public class BattleshipGUI extends JFrame{
 	 **/
 	 
 	public String getIP(){
-		return this.ipField.getText();
+		return this.ipPopUp.getText();
 	}
 	
 	/**
@@ -412,7 +403,7 @@ public class BattleshipGUI extends JFrame{
 	 **/
 	
 	public boolean getIPEntered(){
-		return this.ipEntered;
+		return this.ipPopUp.getIpEntered();
 	}
 	
 	/**
@@ -467,31 +458,6 @@ public class BattleshipGUI extends JFrame{
         }
     }
 	
-	/**
-	 * Listener for the type options buttons
-	 **/
-	 
-    public class typeClick implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			if( e.getSource() == BattleshipGUI.this.hostButton){
-                gameType = 1;
-                difficulty = "INTERNET";
-                BattleshipGUI.this.typePopUp.setVisible(false);
-                BattleshipGUI.this.setVisible(true);
-            }
-            else if( e.getSource() == BattleshipGUI.this.joinButton){
-                gameType = 2;
-                difficulty = "INTERNET";
-                BattleshipGUI.this.typePopUp.setVisible(false);
-                BattleshipGUI.this.ipPopUp.setVisible(true);
-            }
-            else if ( e.getSource() == BattleshipGUI.this.computerButton){
-                gameType = 3;
-                BattleshipGUI.this.typePopUp.setVisible(false);
-                BattleshipGUI.this.colorPopUp.setVisible(true);
-			}
-		}
-	}
 
 	/**
 	 * Listener for the ship sizes button
@@ -641,18 +607,6 @@ public class BattleshipGUI extends JFrame{
 		char character = input.charAt(0);
 		if(character>'9' || character<'2') return false;
 		return true;
-	}
-	
-	/**
-	 * Listener class for entering IP addresses
-	 **/
-	
-	public class ipEnter implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			ipEntered = true;
-			BattleshipGUI.this.ipPopUp.setVisible(false);
-			BattleshipGUI.this.setVisible(true);
-		}
 	}
 	
 }

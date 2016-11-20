@@ -17,6 +17,7 @@ public class JoinGameController extends NetworkController{
 	 * method for joining a game
 	*/
 	public void go(BattleshipGUI gui){
+		System.out.print("entered go");
 		gui.setTitle("Battleship : Player 2");
 	
 		player2 = new Player();

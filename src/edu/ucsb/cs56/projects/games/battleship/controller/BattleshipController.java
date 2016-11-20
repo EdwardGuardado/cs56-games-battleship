@@ -27,7 +27,7 @@ public class BattleshipController {
         }
     }
 	public void wait(BattleshipGUI gui){
-        while(gui.getDifficulty() == null || gui.getGameType() == 0 ){
+        while(gui.getGameType() == 0 ){
 			BattleshipController.sleep();
 		}
 	}

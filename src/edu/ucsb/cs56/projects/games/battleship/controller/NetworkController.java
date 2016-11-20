@@ -16,6 +16,7 @@ public abstract class NetworkController extends GameController{
 	public void playAgain(BattleshipGUI gui){
 		String currentMessage = gui.getMessage();
 		gui.setMessage(currentMessage + " THANK YOU FOR PLAYING");
+        
 		if(gui.getReplayType() == 5) {		//join game
             gui.end();
             gui = new BattleshipGUI();
