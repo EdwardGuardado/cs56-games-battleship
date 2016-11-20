@@ -26,6 +26,7 @@ public abstract class GameController{
 		}
         System.out.println("end wait");
 	}
+    
 	public static void sleep(){
         try{
             Thread.sleep(10);

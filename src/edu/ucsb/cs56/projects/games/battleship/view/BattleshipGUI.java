@@ -239,7 +239,6 @@ public class BattleshipGUI extends JFrame{
                     System.out.println(e);
                 }
             }
-            this.gameType = 2;
             this.ipPopUp.setVisible(false);
             this.setVisible(true);
         }
