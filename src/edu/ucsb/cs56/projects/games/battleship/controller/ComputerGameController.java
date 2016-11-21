@@ -104,7 +104,7 @@ public class ComputerGameController extends GameController{
             gui.end();
             gui = new BattleshipGUI();
             gui.resetShips();
-            this.waitForGameType(gui);
+            this.waitForSizes(gui);
 
             this.go(gui);
             this.endOfGame(gui);

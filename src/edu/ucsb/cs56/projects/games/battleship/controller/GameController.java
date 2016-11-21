@@ -32,6 +32,17 @@ public abstract class GameController{
             this.sleep();
         }
     }
+    public void waitForSizes(BattleshipGUI gui){
+        System.out.println("enter loop");
+        while(gui.shipSizePopUpVisibile() || gui.colorPopUpVisible()){
+             try{
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e){}
+        }
+        System.out.println("exit");
+
+    }
     
 	public static void sleep(){
         try{
