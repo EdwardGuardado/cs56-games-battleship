@@ -32,6 +32,19 @@ public class BattleshipController {
 		}
 	}
 
+    public void waitForSizes(BattleshipGUI gui){
+                    System.out.println("enter");
+
+        while(gui.shipSizePopUpVisibile() || gui.colorPopUpVisible()){
+             try{
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e){}
+        }
+                    System.out.println("exit");
+
+    }
+
     public void go() {
 		gui = new BattleshipGUI();
 		gui.reset();
@@ -56,6 +69,10 @@ public class BattleshipController {
         }
 	
         if(gui.getGameType() == 3) {
+            System.out.println("test1");
+            this.waitForSizes(gui);
+                        System.out.println("test2");
+
             game = new ComputerGameController();
             game.go(gui);
             game.endOfGame(gui);

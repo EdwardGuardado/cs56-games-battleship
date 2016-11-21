@@ -413,6 +413,12 @@ public class BattleshipGUI extends JFrame{
         board.setShipSizes(array);
        // player.setDefaultShipSizes();
     }
+    public boolean shipSizePopUpVisibile(){
+        return this.shipSizePopUp.isVisible();
+    }
+    public boolean colorPopUpVisible(){
+        return this.colorPopUp.isVisible();
+    }
 
 	/**
 	 * Method for returning status of user prompt
@@ -483,7 +489,8 @@ public class BattleshipGUI extends JFrame{
 				
 				for(int i=0; i<5; i++){
 					String input = BattleshipGUI.this.inputBoxes[i].getText();
-					if(BattleshipGUI.isValid(input)==true) {inputSizes[i] = Integer.parseInt(BattleshipGUI.this.inputBoxes[i].getText());}
+					if(BattleshipGUI.isValid(input)==true) {inputSizes[i] = 
+                        Integer.parseInt(BattleshipGUI.this.inputBoxes[i].getText());}
 					else {isValid=false; break;}
 				}
 				if(isValid==true){
@@ -505,8 +512,9 @@ public class BattleshipGUI extends JFrame{
     public class colorClick implements ActionListener{ 
         public void actionPerformed(ActionEvent e){
             if (e.getSource() == BattleshipGUI.this.colorSelectButton){
+                BattleshipGUI.this.shipSizePopUp.setVisible(true);           
                 BattleshipGUI.this.colorPopUp.setVisible(false);
-                BattleshipGUI.this.shipSizePopUp.setVisible(true);
+
             }
         }
     }

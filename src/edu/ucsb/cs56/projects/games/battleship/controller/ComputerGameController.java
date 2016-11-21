@@ -122,17 +122,19 @@ public class ComputerGameController extends GameController{
                 gui.setDefaultShipSizes();
             	HostGameController hostGame = new HostGameController();
                 hostGame.go(gui);
+                hostGame.endOfGame(gui);
             }
             if(gui.getGameType() == 2) {
                 gui.setDefaultShipSizes();
             	JoinGameController joinGame = new JoinGameController();
                 joinGame.go(gui);
+                joinGame.endOfGame(gui);
             }
             if(gui.getGameType() == 3) {
             	ComputerGameController computerGame = new ComputerGameController();
                 computerGame.go(gui);
+                this.endOfGame(gui);
             }
-            this.endOfGame(gui);
         }
 	}
 	public void endOfGame(BattleshipGUI gui){
