@@ -46,9 +46,10 @@ public abstract class NetworkController extends GameController{
 		if(gui.getReplayType() == 3) {		//main menu
             gui.end();
             gui = new BattleshipGUI();
+
             gui.reset();
             gui.setOptions();
-            this.wait(gui);
+            this.waitForGameType(gui);
 
             if(gui.getGameType() == 1) {
             	HostGameController hostGame = new HostGameController();

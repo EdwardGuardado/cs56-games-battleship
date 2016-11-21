@@ -24,8 +24,13 @@ public abstract class GameController{
         while(gui.getIPEntered() == false || gui.getGameType() == 0 ){
 			this.sleep();
 		}
-        System.out.println("end wait");
 	}
+
+    public void waitForGameType(BattleshipGUI gui){
+        while( gui.getGameType() == 0 ){
+            this.sleep();
+        }
+    }
     
 	public static void sleep(){
         try{

@@ -175,10 +175,7 @@ public class HostGameController extends NetworkController{
 		gui.end();
         gui = new BattleshipGUI();
         gui.resetForHost();
-        System.out.println("test1");
         this.wait(gui);
-                System.out.println("test2");
-
         HostGameController hostGame = new HostGameController();
         hostGame.go(gui);
 
