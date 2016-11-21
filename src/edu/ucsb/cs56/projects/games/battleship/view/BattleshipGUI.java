@@ -52,25 +52,13 @@ public class BattleshipGUI extends JFrame{
     private JButton hardButton = new JButton("Hard");
 
 	//Select ship sizes frame popup
-	private JFrame shipSizePopUp = new JFrame();
-	private JButton reminder = new JButton("Input sizes of ships (between 2 and 9), then click to proceed");
-	private JPanel shipSizePanel = new JPanel();
-	private JTextField ship1 = new JTextField(5);
-	private JTextField ship2 = new JTextField(5);
-	private JTextField ship3 = new JTextField(5);
-	private JTextField ship4 = new JTextField(5);
-	private JTextField ship5 = new JTextField(5);
-	private JTextField [] inputBoxes = {ship1, ship2, ship3, ship4, ship5};
+	private SizeSetUpFrame shipSizePopUp = new SizeSetUpFrame();
 
     //Color selection frame popup 
-    private JFrame colorPopUp = new JFrame();
-    private JButton colorSelectButton = new JButton("Select a color, then click to proceed");
-    String [] colorList = {"Default", "Black", "Blue", "Green", "Orange", "Pink", "White", "Yellow"};
-    private JComboBox colorDrop = new JComboBox(colorList);
+    private ColorPopUpFrame colorPopUp = new ColorPopUpFrame();
 	
 	//Join IP frame popup
 	private IpPopUpFrame ipPopUp = new IpPopUpFrame();
-
 	
     //Play again popup
     private JFrame playAgainPopUp = new JFrame();
@@ -164,34 +152,7 @@ public class BattleshipGUI extends JFrame{
         this.networkPlayAgainPopUp.add(playAgainWithNewIPButton);
         this.networkPlayAgainPopUp.add(playAgainAsHostButton);
 	this.networkPlayAgainPopUp.add(networkMainMenuButton);
-        
-        //Setup shipsize popup
-        this.shipSizePopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.shipSizePopUp.setSize(600,100);
-
-        //Add shipsize buttons listeners
-        this.reminder.addActionListener(this.new sizeClick());
-        for(int i=0; i<5; i++){
-            this.inputBoxes[i].addActionListener(this.new sizeClick());
-        }
-        this.shipSizePopUp.getContentPane().add(BorderLayout.SOUTH, reminder);
-        for(int i=0; i<5; i++){
-            this.shipSizePanel.add(this.inputBoxes[i]);
-        }
-        this.shipSizePopUp.getContentPane().add(BorderLayout.CENTER, shipSizePanel);
-
-        //Setup colorPopUp
-        this.colorPopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.colorPopUp.setSize(600,100);
-        
-        //Add shipColor buttons and dropdown listeners
-        this.colorSelectButton.addActionListener(this.new colorClick());
-        this.colorDrop.addActionListener(this.new colorDropSelect());
-
-        //Add buttons and dropdown to window
-        this.colorPopUp.getContentPane().add(BorderLayout.CENTER, colorDrop);
-        this.colorPopUp.getContentPane().add(BorderLayout.SOUTH, colorSelectButton);
-        
+            
         //Initialize sound file locations
         board.placeURL = this.getClass().getResource("sfx/ship_place.aiff");
         shotURL = this.getClass().getResource("sfx/ship_hit.aiff");
@@ -227,10 +188,51 @@ public class BattleshipGUI extends JFrame{
                 setUpJoinGame();
             }
             else if (gameType == 3){            //Play computer
-                this.colorPopUp.setVisible(true);
+                setUpComputerGame();
             }
         }
 
+        public void waitForColor(){
+            while(colorPopUp.getColor() == null || !colorPopUp.getContinue()){
+                try{
+                    Thread.sleep(100);}
+                catch(InterruptedException e){
+                    System.out.println(e);
+                }                    
+                
+            }
+        }
+        public void waitForSizes(){
+            while(!shipSizePopUp.getSizeSet()){
+                try{
+                    Thread.sleep(100);}
+                catch(InterruptedException e){
+                    System.out.println(e);
+                }                    
+                
+            }
+        }
+        public void setUpComputerGame(){
+            this.colorPopUp.setVisible(true);
+            waitForColor();
+            this.board.setShipColor(this.colorPopUp.getColor());
+            this.shipSizePopUp.setVisible(true);           
+            this.colorPopUp.setVisible(false);  
+
+            waitForSizes();
+            board.setShipSizes(shipSizePopUp.getShipSizes());
+            this.shipSizePopUp.setVisible(false);
+            this.diffPopUp.setVisible(true);
+
+        }
+        public void setUpComputerNewShips(){
+            this.setVisible(false);
+            this.shipSizePopUp.setVisible(true);
+            waitForSizes();
+            board.setShipSizes(shipSizePopUp.getShipSizes());
+            this.shipSizePopUp.setVisible(false);
+            this.diffPopUp.setVisible(true);
+        }
         public void setUpJoinGame(){
             this.ipPopUp.setVisible(true);
             while(this.ipPopUp.getIpEntered() == false){
@@ -321,8 +323,7 @@ public class BattleshipGUI extends JFrame{
 
             board.reset();
 
-            this.setVisible(false);
-            this.shipSizePopUp.setVisible(true);
+            setUpComputerNewShips();
         }
 
         public void computerPlayAgain() {
@@ -472,93 +473,7 @@ public class BattleshipGUI extends JFrame{
         }
     }
 	
-
-	/**
-	 * Listener for the ship sizes button
-     * once the user clicks the proceed button, texts in the 5 text fields will be check by isValid() method, 
-     * and if all of them are valid, program will read in the 5 numbers into the shipSizes array and 
-     * send the message of clicking to GUI
-	 **/
-
-	public class sizeClick implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			if(e.getSource() == BattleshipGUI.this.reminder){
-				int [] inputSizes = Player.shipSizes; 
-                board.setShipSizes(inputSizes);
-				boolean isValid = true;
-				
-				for(int i=0; i<5; i++){
-					String input = BattleshipGUI.this.inputBoxes[i].getText();
-					if(BattleshipGUI.isValid(input)==true) {inputSizes[i] = 
-                        Integer.parseInt(BattleshipGUI.this.inputBoxes[i].getText());}
-					else {isValid=false; break;}
-				}
-				if(isValid==true){
-					BattleshipGUI.this.shipSizePopUp.setVisible(false);
-					BattleshipGUI.this.diffPopUp.setVisible(true);
-				}
-				else reminder.setText("Please input sizes between 2 and 9");
-			}
-		}
-	}
-
-
-    /**
-     * Listener for the color selection menu's continue button
-     * when the user clicks the button it will move onto the ship size
-     * selection menu
-     **/
-
-    public class colorClick implements ActionListener{ 
-        public void actionPerformed(ActionEvent e){
-            if (e.getSource() == BattleshipGUI.this.colorSelectButton){
-                BattleshipGUI.this.shipSizePopUp.setVisible(true);           
-                BattleshipGUI.this.colorPopUp.setVisible(false);
-
-            }
-        }
-    }
-
-    /**
-    * Listener for the color selection menu's dropdown button
-    * when the user selects a color it will set shipColor to that color
-    **/
-
-    public class colorDropSelect implements ActionListener{
-        public void actionPerformed(ActionEvent e){
-            JComboBox combo = (JComboBox)e.getSource();
-            switch((String)combo.getSelectedItem()){
-                case "Default":
-                    board.setShipColor(Color.DARK_GRAY);
-                    break;
-                case "Black":
-                    board.setShipColor(Color.BLACK);
-                    break;
-                case "Blue":
-                    board.setShipColor(Color.BLUE);
-                    break;
-                case "Green":
-                    board.setShipColor(Color.GREEN);
-                    break;
-                case "Orange":
-                    board.setShipColor(Color.ORANGE);
-                    break;
-                case "Pink":
-                    board.setShipColor(Color.PINK);
-                    break;
-                case "White":
-                    board.setShipColor(Color.WHITE);
-                    break;
-                case "Yellow":
-                    board.setShipColor(Color.YELLOW);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
     
-
     /**
      * Listener for the play again options
      **/
@@ -614,15 +529,4 @@ public class BattleshipGUI extends JFrame{
             }
         } 
     }    
-
-	/**
-	 * Method exlusively for ship sizes button listener to check validity of user input
-	 **/
-	public static boolean isValid(String input){
-		if(input.equals("") || input.length()!=1) return false;
-		char character = input.charAt(0);
-		if(character>'9' || character<'2') return false;
-		return true;
-	}
-	
 }
