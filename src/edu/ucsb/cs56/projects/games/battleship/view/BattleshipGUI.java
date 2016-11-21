@@ -46,10 +46,7 @@ public class BattleshipGUI extends JFrame{
 	private TypeSetUpFrame typePopUp = new TypeSetUpFrame();
 	
 	//Difficulty frame popup
-    private JFrame diffPopUp = new JFrame();
-    private JButton easyButton = new JButton("Easy");
-    private JButton mediumButton = new JButton("Medium");
-    private JButton hardButton = new JButton("Hard");
+    private DiffPopUpFrame diffPopUp = new DiffPopUpFrame();
 
 	//Select ship sizes frame popup
 	private SizeSetUpFrame shipSizePopUp = new SizeSetUpFrame();
@@ -86,10 +83,6 @@ public class BattleshipGUI extends JFrame{
         this.getContentPane().add(BorderLayout.NORTH,title);
 
         //Add game board
-        this.board.setSize(100,210);
-        this.board.addMouseListener(board.new cellClick());
-        this.board.addMouseMotionListener(board.new mouseMove());
-        this.board.addKeyListener(board.new changeOrientation());
         this.getContentPane().add(BorderLayout.CENTER,board);
         this.getContentPane().setBackground(Color.WHITE);
 
@@ -108,27 +101,13 @@ public class BattleshipGUI extends JFrame{
         this.setSize(350,500);
         this.board.requestFocusInWindow();
 
-        //setup difficulty options popup
-        this.diffPopUp.setLayout(threeButtonGrid);
-        this.diffPopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.diffPopUp.setSize(600,100);
-
-        //Add difficulty buttons listeners
-        this.easyButton.addActionListener(this.new difficultyClick());
-        this.mediumButton.addActionListener(this.new difficultyClick());
-        this.hardButton.addActionListener(this.new difficultyClick());
-
-        this.diffPopUp.add(easyButton);
-        this.diffPopUp.add(mediumButton);
-        this.diffPopUp.add(hardButton);
-
         //Setup playAgain popup
         this.playAgainPopUp.setLayout(threeButtonGrid);
         this.playAgainPopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.playAgainPopUp.setSize(800,100);
 
-	//Setup networkPlayAgain popup
-	GridLayout fourButtonGrid = new GridLayout(1,4);
+	   //Setup networkPlayAgain popup
+	   GridLayout fourButtonGrid = new GridLayout(1,4);
         this.networkPlayAgainPopUp.setLayout(fourButtonGrid);
         this.networkPlayAgainPopUp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.networkPlayAgainPopUp.setSize(800,100);
@@ -137,9 +116,9 @@ public class BattleshipGUI extends JFrame{
         this.playAgainButton.addActionListener(this.new playAgainClick());
         this.newShipsButton.addActionListener(this.new playAgainClick());
         this.mainMenuButton.addActionListener(this.new playAgainClick());
-	this.playAgainWithNewIPButton.addActionListener(this.new networkPlayAgainClick());
-	this.playAgainAsHostButton.addActionListener(this.new networkPlayAgainClick());
-	this.networkMainMenuButton.addActionListener(this.new networkPlayAgainClick());
+	    this.playAgainWithNewIPButton.addActionListener(this.new networkPlayAgainClick());
+	   this.playAgainAsHostButton.addActionListener(this.new networkPlayAgainClick());
+	   this.networkMainMenuButton.addActionListener(this.new networkPlayAgainClick());
         this.networkPlayAgainButton.addActionListener(this.new networkPlayAgainClick());
 
         //Add playAgain buttons to window
@@ -147,11 +126,11 @@ public class BattleshipGUI extends JFrame{
         this.playAgainPopUp.add(newShipsButton);
         this.playAgainPopUp.add(mainMenuButton);
 
-	 //Add networkPlayAgain buttons to window
-	this.networkPlayAgainPopUp.add(networkPlayAgainButton);
+	    //Add networkPlayAgain buttons to window
+	    this.networkPlayAgainPopUp.add(networkPlayAgainButton);
         this.networkPlayAgainPopUp.add(playAgainWithNewIPButton);
         this.networkPlayAgainPopUp.add(playAgainAsHostButton);
-	this.networkPlayAgainPopUp.add(networkMainMenuButton);
+	    this.networkPlayAgainPopUp.add(networkMainMenuButton);
             
         //Initialize sound file locations
         board.placeURL = this.getClass().getResource("sfx/ship_place.aiff");
@@ -212,6 +191,16 @@ public class BattleshipGUI extends JFrame{
                 
             }
         }
+        public void waitForDifficulty(){
+            while(diffPopUp.getDifficulty() == null){
+                try{
+                    Thread.sleep(100);}
+                catch(InterruptedException e){
+                    System.out.println(e);
+                }                    
+                
+            }            
+        }
         public void setUpComputerGame(){
             this.colorPopUp.setVisible(true);
             waitForColor();
@@ -224,6 +213,10 @@ public class BattleshipGUI extends JFrame{
             this.shipSizePopUp.setVisible(false);
             this.diffPopUp.setVisible(true);
 
+            waitForDifficulty();
+            difficulty = diffPopUp.getDifficulty();
+            this.diffPopUp.setVisible(false);
+            this.setVisible(true);
         }
         public void setUpComputerNewShips(){
             this.setVisible(false);
@@ -232,6 +225,18 @@ public class BattleshipGUI extends JFrame{
             board.setShipSizes(shipSizePopUp.getShipSizes());
             this.shipSizePopUp.setVisible(false);
             this.diffPopUp.setVisible(true);
+
+                       waitForDifficulty();
+            difficulty = diffPopUp.getDifficulty();
+            this.diffPopUp.setVisible(false);
+            this.setVisible(true);
+        }
+
+        public void setUpCompterPlayAgain(){
+            waitForDifficulty();
+            difficulty = diffPopUp.getDifficulty();
+            this.diffPopUp.setVisible(false);
+            this.setVisible(true);
         }
         public void setUpJoinGame(){
             this.ipPopUp.setVisible(true);
@@ -271,6 +276,7 @@ public class BattleshipGUI extends JFrame{
         
             this.setVisible(false);
             this.diffPopUp.setVisible(true);
+            setUpCompterPlayAgain();
         
         }
 
@@ -449,31 +455,7 @@ public class BattleshipGUI extends JFrame{
     public void addShot(int shot){ board.addShot(shot);}
     public String hitPlayer(int shot){ return board.hitPlayer(shot);}
     public void addEnemyBoat(int boatLoc){ board.addEnemyBoat(boatLoc);}
-    /**
-	 * Listener for difficulty option buttons
-	 **/
-	
-    public class difficultyClick implements ActionListener{
-        public void actionPerformed(ActionEvent e){
-            if( e.getSource() == BattleshipGUI.this.easyButton){
-                difficulty = "EASY";
-                BattleshipGUI.this.diffPopUp.setVisible(false);
-                BattleshipGUI.this.setVisible(true);
-            }
-            else if( e.getSource() == BattleshipGUI.this.mediumButton){
-                difficulty = "MEDIUM";
-                BattleshipGUI.this.diffPopUp.setVisible(false);
-                BattleshipGUI.this.setVisible(true);
-            }
-            else if ( e.getSource() == BattleshipGUI.this.hardButton){
-                difficulty = "HARD";
-                BattleshipGUI.this.diffPopUp.setVisible(false);
-                BattleshipGUI.this.setVisible(true);
-            }
-        }
-    }
-	
-    
+     
     /**
      * Listener for the play again options
      **/
