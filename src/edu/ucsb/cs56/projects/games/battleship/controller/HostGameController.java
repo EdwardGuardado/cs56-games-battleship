@@ -85,6 +85,7 @@ public class HostGameController extends NetworkController{
 		}	
 
 		ArrayList<Integer> player2BoatsList = gui.getEnemyBoats();
+		System.out.println("enemy boats: " + player2BoatsList);
 		ArrayList<ArrayList<Integer>> player2BoatGroups = new ArrayList<ArrayList<Integer>>();
 
 

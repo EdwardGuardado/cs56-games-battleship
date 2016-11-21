@@ -118,10 +118,12 @@ public class ComputerGameController extends GameController{
 
 
             if(gui.getGameType() == 1) {
+                gui.setDefaultShipSizes();
             	HostGameController hostGame = new HostGameController();
                 hostGame.go(gui);
             }
             if(gui.getGameType() == 2) {
+                gui.setDefaultShipSizes();
             	JoinGameController joinGame = new JoinGameController();
                 joinGame.go(gui);
             }

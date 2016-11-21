@@ -408,6 +408,12 @@ public class BattleshipGUI extends JFrame{
     public void setIpEntered(boolean set){
         this.ipPopUp.setIpEntered(set);
     }
+    public void setDefaultShipSizes(){
+        int[] array = {2,3,3,4,5};
+        board.setShipSizes(array);
+       // player.setDefaultShipSizes();
+    }
+
 	/**
 	 * Method for returning status of user prompt
 	 * @return true for the uses acknowledged prompt, false for user hasn't acknowledged prompt
