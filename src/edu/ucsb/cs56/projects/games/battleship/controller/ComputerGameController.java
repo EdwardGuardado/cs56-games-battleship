@@ -118,6 +118,7 @@ public class ComputerGameController extends GameController{
 
 
             if(gui.getGameType() == 1) {
+                
                 gui.setDefaultShipSizes();
             	HostGameController hostGame = new HostGameController();
                 hostGame.go(gui);

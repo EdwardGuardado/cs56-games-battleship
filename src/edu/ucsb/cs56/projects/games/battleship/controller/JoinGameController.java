@@ -85,7 +85,7 @@ public class JoinGameController extends NetworkController{
 		player1BoatsList = gui.getEnemyBoats();
 		player1BoatGroups = new ArrayList<ArrayList<Integer>>();
 
-
+		player2.setDefaultShipSizes();
 	 	int[] player2ShipSizes = player2.getShipSizes();
 		int iterator =0; 
 
