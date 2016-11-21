@@ -302,7 +302,7 @@ public class BattleshipGUI extends JFrame{
             this.setVisible(false);
             this.prompt = true;
             this.gameType = 1;
-            this.ipPopUp.setIpEntered(false);
+            this.ipPopUp.setIpEntered(true);
             this.replay = true;
              
             board.reset();
