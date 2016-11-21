@@ -63,6 +63,7 @@ public abstract class NetworkController extends GameController{
 
             }
             if(gui.getGameType() == 3) {
+                this.waitForSizes(gui);
                 ComputerGameController computerGame = new ComputerGameController();
                 computerGame.go(gui);
                 computerGame.endOfGame(gui);
