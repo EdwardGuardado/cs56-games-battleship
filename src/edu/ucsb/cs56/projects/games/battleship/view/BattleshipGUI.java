@@ -221,6 +221,7 @@ public class BattleshipGUI extends JFrame{
             this.typePopUp.setVisible(false);
             if(gameType == 1){                 //Host Game
                 this.setVisible(true);
+                this.setIpEntered(true);
             }
             else if (gameType == 2){            //Join Game
                 setUpJoinGame();
@@ -262,7 +263,6 @@ public class BattleshipGUI extends JFrame{
             this.difficulty = null;
             this.prompt = true;
             this.gameType = 3;
-            this.ipPopUp.setIpEntered(false);
             this.replay = true;
              
             board.reset();
@@ -405,6 +405,9 @@ public class BattleshipGUI extends JFrame{
 		return this.ipPopUp.getIpEntered();
 	}
 	
+    public void setIpEntered(boolean set){
+        this.ipPopUp.setIpEntered(set);
+    }
 	/**
 	 * Method for returning status of user prompt
 	 * @return true for the uses acknowledged prompt, false for user hasn't acknowledged prompt

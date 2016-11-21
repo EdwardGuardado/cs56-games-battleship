@@ -27,6 +27,7 @@ public abstract class GameController{
 	}
 
     public void waitForGameType(BattleshipGUI gui){
+        System.out.println("waiting for game type");
         while( gui.getGameType() == 0 ){
             this.sleep();
         }

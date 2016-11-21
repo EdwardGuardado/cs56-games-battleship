@@ -54,17 +54,19 @@ public abstract class NetworkController extends GameController{
             if(gui.getGameType() == 1) {
             	HostGameController hostGame = new HostGameController();
             	hostGame.go(gui);
-                //this.hostGame(gui);
+                this.endOfGame(gui);
             }
             if(gui.getGameType() == 2) {
             	JoinGameController joinGame = new JoinGameController();
             	joinGame.go(gui);
+                this.endOfGame(gui);
+
             }
             if(gui.getGameType() == 3) {
                 ComputerGameController computerGame = new ComputerGameController();
                 computerGame.go(gui);
+                computerGame.endOfGame(gui);
             }
-            this.endOfGame(gui);
         }
 	 }
 
