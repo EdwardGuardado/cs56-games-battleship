@@ -308,7 +308,7 @@ public class BattleshipGUI extends JFrame{
             this.replay = true;
              
             board.reset();
-        
+            setDefaultShipSizes();
             this.setVisible(true);
         
         }
