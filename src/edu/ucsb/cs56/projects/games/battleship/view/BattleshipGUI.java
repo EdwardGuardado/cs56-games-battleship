@@ -281,7 +281,7 @@ public class BattleshipGUI extends JFrame{
             board.reset();
         
             this.setVisible(false);
-            this.ipPopUp.setVisible(true);
+            setUpJoinGame();
         
         }
 
@@ -289,7 +289,7 @@ public class BattleshipGUI extends JFrame{
             this.setVisible(false);
             this.prompt = true;
             this.gameType = 2;
-            this.ipPopUp.setIpEntered(false);
+            this.ipPopUp.setIpEntered(true);
             this.replay = true;
              
             board.reset();

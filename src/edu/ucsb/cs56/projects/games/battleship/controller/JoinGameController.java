@@ -17,15 +17,17 @@ public class JoinGameController extends NetworkController{
 	 * method for joining a game
 	*/
 	public void go(BattleshipGUI gui){
-		System.out.print("entered go")
+		System.out.print("entered go");
 		gui.setTitle("Battleship : Player 2");
 	
 		player2 = new Player();
 		
+		System.out.println("before enter");
 		//Wait until an IP address has been entered
 		while( !gui.getIPEntered()){
 			BattleshipController.sleep();
 		}
+		System.out.println("ip entered");
 		connectTo = gui.getIP();
 
 		player1Socket = null;
@@ -179,11 +181,12 @@ public class JoinGameController extends NetworkController{
 		gui.resetForJoinAgain();
 		this.wait(gui);
 
-		JoinGameController joinGame = new JoinGameController();
+		//JoinGameController joinGame = new JoinGameController();
 		this.joinGameAgain(gui);
 		this.endOfGame(gui);
 	}
 	public void joinGameAgain(BattleshipGUI gui){
+		System.out.println("join Game again");
 		gui.setTitle("Battleship : Player 2");
 	
 		player2 = new Player();
